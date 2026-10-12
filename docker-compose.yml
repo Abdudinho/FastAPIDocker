@@ -1,0 +1,28 @@
+version: "v5.6.0"
+
+services:
+  database:
+    image: postgres:alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "0208"
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postresql/data
+
+  fast_api:
+    build: .
+    image: fast_api_docker:alpine
+    container_name: fast_api_docker
+    command: ["uvicorn", "apps.views.__init__:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+
+
+volumes:
+  pg_data:
